@@ -104,10 +104,10 @@ WEBOBJECTS_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY="${WEBOBJECTS_ROOT_IN_FRAMEWORKS_
 			  WO_JAVA_APPS_ROOT_FOR_THIS_BUILD="${WO_SYSTEM_ROOT_FOR_THIS_BUILD}/Library/WebObjects/JavaApplications"
 			   WO_BOOTSTRAP_JAR_FOR_THIS_BUILD="${WO_JAVA_APPS_ROOT_FOR_THIS_BUILD}/wotaskd.woa/WOBootstrap.jar"
 
-				  WO_LCOAL_ROOT_FOR_THIS_BUILD="${ROOT}${LOCAL_PATH_PREFIX}"
-			WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD="${WO_LCOAL_ROOT_FOR_THIS_BUILD}/Library/Frameworks"
-				  WO_EXTENSIONS_FOR_THIS_BUILD="${WO_LCOAL_ROOT_FOR_THIS_BUILD}/Library/WebObjects/Extensions"
-				   WO_APPS_ROOT_FOR_THIS_BUILD="${WO_LCOAL_ROOT_FOR_THIS_BUILD}/Library/WebObjects/Applications"
+				  WO_LOCAL_ROOT_FOR_THIS_BUILD="${ROOT}${LOCAL_PATH_PREFIX}"
+			WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD="${WO_LOCAL_ROOT_FOR_THIS_BUILD}/Library/Frameworks"
+				  WO_EXTENSIONS_FOR_THIS_BUILD="${WO_LOCAL_ROOT_FOR_THIS_BUILD}/Library/WebObjects/Extensions"
+				   WO_APPS_ROOT_FOR_THIS_BUILD="${WO_LOCAL_ROOT_FOR_THIS_BUILD}/Library/WebObjects/Applications"
 
 
 # Make sure the Libraries folder exists
@@ -232,8 +232,8 @@ for PROJECT in $PROJECTS; do
 					echo "    Not found in Project WOnder: ${FRAMEWORK_NAME_IN_WONDER_INSTALL}"
 				fi
 
-				# Check to see if the Framework is a WOnder framework by
-				# checking for it in the WOnder frameworks path of the
+				# Check to see if the Framework is a SDAG framework by
+				# checking for it in the SDAG frameworks path of the
 				# repository NOTE: The same framework name can exist in both
 				# (JavaWOExtensions.framework, for example) so this is not
 				# either/or situation and we must link to both. The Local
