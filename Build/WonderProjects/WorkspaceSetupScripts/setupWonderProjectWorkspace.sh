@@ -154,7 +154,7 @@ PROJECTS=`ls ${WORKSPACE}/Projects/`
 
 # Step through them to get the list of WO frameworks on their Classpath.
 for PROJECT in $PROJECTS; do
-	if [ "${PROJECT}" == "${PROJECT_NAME}" ]; then
+#	if [ "${PROJECT}" == "${PROJECT_NAME}" ]; then
 		echo " "
 		echo "Parsing ${WORKSPACE}/Projects/**/.classpath to determine WOFramework dependencies"
 		FRAMEWORKS=`cat ${WORKSPACE}/Projects/**/.classpath | grep WOFramework/ | sed 's#.*WOFramework/\([^"]*\)"/>#\1#'`
@@ -266,7 +266,7 @@ for PROJECT in $PROJECTS; do
 				exit 1
 			fi
 		done
-	fi
+#	fi
 done
 
 echo "Link to ${WOPROJECT} so Ant can build the WO project."
