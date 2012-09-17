@@ -160,7 +160,7 @@ for PROJECT in $PROJECTS; do
 #	if [ "${PROJECT}" == "${PROJECT_NAME}" ]; then
 		echo " "
 		echo "Parsing ${WORKSPACE}/Projects/**/.classpath and ${WORKSPACE}/**/.classpath to determine WOFramework dependencies"
-		FRAMEWORKS=`cat ${WORKSPACE}/Projects/**/.classpath ${WORKSPACE}/**/.classpath | grep WOFramework/ | sed 's#.*WOFramework/\([^"]*\)"/>#\1#' | awk '!x[$0]++'`
+		FRAMEWORKS=`cat ${WORKSPACE}/Projects/**/.classpath ${WORKSPACE}/**/.classpath | grep -v ${PROJECT} | grep WOFramework/ | sed 's#.*WOFramework/\([^"]*\)"/>#\1#' | awk '!x[$0]++'`
 		echo "WOFrameworks required by ${PROJECT} :"
 		echo "$FRAMEWORKS"
 		echo "Find them and create Symbolic Links to them (much faster than copying!)"
@@ -169,7 +169,8 @@ for PROJECT in $PROJECTS; do
 		#	1) In the projects checked out by this project in the ${WORKSPACE}/Projects directory
 		#	2) WebObjects Frameworks in the WOFrameworksRepository
 		#	3) Project WOnder Frameworks in the WOFrameworksRepository
-		#	4) Other Jenkins jobs with matching names - very limiting.
+		#	4) SD Frameworks in the WOFrameworksRepository
+		#	5) Other Jenkins jobs with matching names - very limiting.
 		#		(TODO: This should look for other jobs that have this job's name
 		#			   in the <childProjects> tag of their config.xml file.)
 		for FRAMEWORK in $FRAMEWORKS; do
