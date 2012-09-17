@@ -96,6 +96,9 @@ WEBOBJECTS_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY="${WEBOBJECTS_ROOT_IN_FRAMEWORKS_
 		  WONDER_ROOT_IN_FRAMEWORKS_REPOSITORY="${FRAMEWORKS_REPOSITORY}/ProjectWOnder/${WONDER_GIT_REFERENCE}/${WO_VERSION}"
 	WONDER_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY="${WONDER_ROOT_IN_FRAMEWORKS_REPOSITORY}/Library/Frameworks"
 
+			SDAG_ROOT_IN_FRAMEWORKS_REPOSITORY="${FRAMEWORKS_REPOSITORY}/SDAG"
+	  SDAG_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY="${SDAG_ROOT_IN_FRAMEWORKS_REPOSITORY}/Library/Frameworks"
+
 				 WO_SYSTEM_ROOT_FOR_THIS_BUILD="${ROOT}${SYSTEM_PATH_PREFIX}"
 		   WO_SYSTEM_FRAMEWORKS_FOR_THIS_BUILD="${WO_SYSTEM_ROOT_FOR_THIS_BUILD}/Library/Frameworks"
 			  WO_JAVA_APPS_ROOT_FOR_THIS_BUILD="${WO_SYSTEM_ROOT_FOR_THIS_BUILD}/Library/WebObjects/JavaApplications"
@@ -157,7 +160,7 @@ for PROJECT in $PROJECTS; do
 #	if [ "${PROJECT}" == "${PROJECT_NAME}" ]; then
 		echo " "
 		echo "Parsing ${WORKSPACE}/Projects/**/.classpath to determine WOFramework dependencies"
-		FRAMEWORKS=`cat ${WORKSPACE}/Projects/**/.classpath | grep WOFramework/ | sed 's#.*WOFramework/\([^"]*\)"/>#\1#'`
+		FRAMEWORKS=`cat ${WORKSPACE}/Projects/**/.classpath | grep WOFramework/ | sed 's#.*WOFramework/\([^"]*\)"/>#\1#' | sort -u`
 		echo "WOFrameworks required by ${PROJECT} :"
 		echo "$FRAMEWORKS"
 		echo "Find them and create Symbolic Links to them (much faster than copying!)"
@@ -177,6 +180,7 @@ for PROJECT in $PROJECTS; do
 			FRAMEWORK_NAME_IN_SAME_JOB_INSTALL="${WORKSPACE}/Projects/${FRAMEWORK}/dist/${FRAMEWORK}.framework"
 			FRAMEWORK_NAME_IN_WEBOBJECTS_INSTALL="${WEBOBJECTS_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY}/${FRAMEWORK}.framework"
 			FRAMEWORK_NAME_IN_WONDER_INSTALL="${WONDER_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY}/${FRAMEWORK}.framework"
+			FRAMEWORK_NAME_IN_SDAG_INSTALL="${SDAG_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY}/${FRAMEWORK}.framework"
 			JENKINS_FRAMEWORK_JOB_DIST="${JOB_ROOT}/${FRAMEWORK}${BRANCH_TAG_DELIMITER}${PROJECT_BRANCH_TAG}/lastSuccessful/archive/Projects/${FRAMEWORK}/dist"
 			FRAMEWORK_ARTIFACT_PATH_IN_JENKINS_JOB="${JENKINS_FRAMEWORK_JOB_DIST}/${FRAMEWORK}.tar.gz"
 
@@ -228,6 +232,22 @@ for PROJECT in $PROJECTS; do
 					echo "    Not found in Project WOnder: ${FRAMEWORK_NAME_IN_WONDER_INSTALL}"
 				fi
 
+				# Check to see if the Framework is a WOnder framework by
+				# checking for it in the WOnder frameworks path of the
+				# repository NOTE: The same framework name can exist in both
+				# (JavaWOExtensions.framework, for example) so this is not
+				# either/or situation and we must link to both. The Local
+				# version will be used automatically by WO if it exists.
+				if [ -e "${FRAMEWORK_NAME_IN_SDAG_INSTALL}" ]; then
+					echo "    Found in SDAG."
+					echo "        Linking: ln -sfn ${FRAMEWORK_NAME_IN_SDAG_INSTALL}"
+					echo "                         ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD}"
+					(ln -sfn ${FRAMEWORK_NAME_IN_SDAG_INSTALL} ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD})
+					FRAMEWORK_LINK_SUCCESSFUL="true"
+				else
+					echo "    Not found in SDAG: ${FRAMEWORK_NAME_IN_SDAG_INSTALL}"
+				fi
+
 				# Check to see if the Framework is a Jenkins-Built framework
 				# by checking for it in the Jobs directory for properly
 				# named Hudson jobs. NOTE: We may create and/or build our
@@ -261,7 +281,8 @@ for PROJECT in $PROJECTS; do
 				echo "           and built (most likely by its own ant task) into: ${FRAMEWORK_NAME_IN_SAME_JOB_INSTALL}"
 				echo "        2) In the WebObjects Frameworks at: ${FRAMEWORK_NAME_IN_WEBOBJECTS_INSTALL}"
 				echo "        3) In the Wonder Frameworks at: ${FRAMEWORK_NAME_IN_WONDER_INSTALL}"
-				echo "        4) As a Jenkins job that has at least one successful Build and"
+				echo "        4) In the SDAG Frameworks at: ${FRAMEWORK_NAME_IN_SDAG_INSTALL}"
+				echo "        5) As a Jenkins job that has at least one successful Build and"
 				echo "           an artifact path of *exactly*: ${FRAMEWORK_ARTIFACT_PATH_IN_JENKINS_JOB}"
 				exit 1
 			fi
