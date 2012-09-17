@@ -177,6 +177,8 @@ for PROJECT in $PROJECTS; do
 			FRAMEWORK_LINK_SUCCESSFUL="false"
 			echo " "
 			echo "Look For: ${FRAMEWORK}"
+			FRAMEWORK_IN_SAME_MAINJOB_PROJECT="${WORKSPACE}/${FRAMEWORK}"
+			FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL="${WORKSPACE}/${FRAMEWORK}/dist/${FRAMEWORK}.framework"
 			FRAMEWORK_IN_SAME_JOB_PROJECT="${WORKSPACE}/Projects/${FRAMEWORK}"
 			FRAMEWORK_NAME_IN_SAME_JOB_INSTALL="${WORKSPACE}/Projects/${FRAMEWORK}/dist/${FRAMEWORK}.framework"
 			FRAMEWORK_NAME_IN_WEBOBJECTS_INSTALL="${WEBOBJECTS_FRAMEWORKS_IN_FRAMEWORKS_REPOSITORY}/${FRAMEWORK}.framework"
@@ -201,8 +203,19 @@ for PROJECT in $PROJECTS; do
 				echo "                         ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD}"
 				(ln -sfn ${FRAMEWORK_NAME_IN_SAME_JOB_INSTALL} ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD})
 				FRAMEWORK_LINK_SUCCESSFUL="true"
+			elif [ -e "${FRAMEWORK_IN_SAME_MAINJOB_PROJECT}" ]; then
+				echo "    Found in this job's Workspace main directory. Assuming it will be built and installed in: ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL}"
+				if [ ! -e "${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL}" ]; then
+					echo "            ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL} doesn't yet exist, make it and link to it."
+					echo "            mkdir -p ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL}"
+					mkdir -p ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL}
+				fi
+				echo "        Linking: ln -sfn ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL}"
+				echo "                         ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD}"
+				(ln -sfn ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL} ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD})
+				FRAMEWORK_LINK_SUCCESSFUL="true"
 			else
-				echo "    Not found in this job's Workspace/Projects directory: ${FRAMEWORK_IN_SAME_JOB_PROJECT}"
+				echo "    Not found in this job's Workspace/Projects or main directory: ${FRAMEWORK_IN_SAME_JOB_PROJECT} or ${FRAMEWORK_IN_SAME_MAINJOB_PROJECT}"
 
 				# Check to see if the Framework is a System framework
 				# (WebObjects core frameworks) by checking for it in the
@@ -280,10 +293,12 @@ for PROJECT in $PROJECTS; do
 				echo "    ${FRAMEWORK}.framework must be available at one of the following locations:"
 				echo "        1) As another project checked out by this job into the workspace Projects directory: ${FRAMEWORK_IN_SAME_JOB_PROJECT}"
 				echo "           and built (most likely by its own ant task) into: ${FRAMEWORK_NAME_IN_SAME_JOB_INSTALL}"
-				echo "        2) In the WebObjects Frameworks at: ${FRAMEWORK_NAME_IN_WEBOBJECTS_INSTALL}"
-				echo "        3) In the Wonder Frameworks at: ${FRAMEWORK_NAME_IN_WONDER_INSTALL}"
-				echo "        4) In the SDAG Frameworks at: ${FRAMEWORK_NAME_IN_SDAG_INSTALL}"
-				echo "        5) As a Jenkins job that has at least one successful Build and"
+				echo "        2) As another project checked out by this job into the workspace main directory: ${FRAMEWORK_IN_SAME_MAINJOB_PROJECT}"
+				echo "           and built (most likely by its own ant task) into: ${FRAMEWORK_NAME_IN_SAME_MAINJOB_INSTALL}"
+				echo "        3) In the WebObjects Frameworks at: ${FRAMEWORK_NAME_IN_WEBOBJECTS_INSTALL}"
+				echo "        4) In the Wonder Frameworks at: ${FRAMEWORK_NAME_IN_WONDER_INSTALL}"
+				echo "        5) In the SDAG Frameworks at: ${FRAMEWORK_NAME_IN_SDAG_INSTALL}"
+				echo "        6) As a Jenkins job that has at least one successful Build and"
 				echo "           an artifact path of *exactly*: ${FRAMEWORK_ARTIFACT_PATH_IN_JENKINS_JOB}"
 				exit 1
 			fi
