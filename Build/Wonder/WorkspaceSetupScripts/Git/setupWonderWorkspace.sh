@@ -65,7 +65,7 @@ elif [ "$PLATFORM_TYPE" = "Darwin" ]; then
     SYSTEM_PATH_PREFIX="/System"
 else
     LOCAL_PATH_PREFIX="/Local"
-    SYSTEM_PATH_PREFIX=""
+    SYSTEM_PATH_PREFIX="/System"
 fi
 
 # Create variables for the build's WO_SYSTEM_ROOT and WO_LOCAL_ROOT
@@ -102,8 +102,8 @@ echo "Look for: ${WEBOBJECTS_LIBRARY_IN_FRAMEWORKS_REPOSITORY}"
 if [ -e "${WEBOBJECTS_LIBRARY_IN_FRAMEWORKS_REPOSITORY}" ]; then
 	echo "Use WebObject's Library directory as the System Library directory"
 	echo "ln -sfn ${WEBOBJECTS_LIBRARY_IN_FRAMEWORKS_REPOSITORY}"
-	echo "        ${WO_SYSTEM_ROOT_FOR_THIS_BUILD}"
-	(ln -sfn ${WEBOBJECTS_LIBRARY_IN_FRAMEWORKS_REPOSITORY} ${WO_SYSTEM_ROOT_FOR_THIS_BUILD})
+	echo "        ${WO_SYSTEM_ROOT_FOR_THIS_BUILD}/"
+	(ln -sfn ${WEBOBJECTS_LIBRARY_IN_FRAMEWORKS_REPOSITORY} ${WO_SYSTEM_ROOT_FOR_THIS_BUILD}/)
 else
 	echo "WebObjects Version ${WO_VERSION} NOT FOUND!"
 	echo "This build cannot run without it. Verify that the installWebObjects.sh script is being run and"
