@@ -83,7 +83,7 @@ elif [ "$PLATFORM_TYPE" = "Darwin" ]; then
     SYSTEM_PATH_PREFIX="/System"
 else
     LOCAL_PATH_PREFIX="/Local"
-    SYSTEM_PATH_PREFIX=""
+    SYSTEM_PATH_PREFIX="/System"
 fi
 echo "        Local Path Prefix: ${LOCAL_PATH_PREFIX}"
 echo "       System Path Prefix: ${SYSTEM_PATH_PREFIX}"
@@ -123,8 +123,8 @@ if [ -e "${WOTASKD_IN_FRAMEWORKS_REPOSITORY}" ]; then
 	mkdir -p ${WO_JAVA_APPS_ROOT_FOR_THIS_BUILD}
 	echo "    Found wotaskd.woa in the Framworks Repository."
 	echo "        Linking: ln -sfn ${WOTASKD_IN_FRAMEWORKS_REPOSITORY}"
-	echo "                         ${WO_JAVA_APPS_ROOT_FOR_THIS_BUILD}"
-	(ln -sfn ${WOTASKD_IN_FRAMEWORKS_REPOSITORY} ${WO_JAVA_APPS_ROOT_FOR_THIS_BUILD})
+	echo "                         ${WO_JAVA_APPS_ROOT_FOR_THIS_BUILD}/"
+	(ln -sfn ${WOTASKD_IN_FRAMEWORKS_REPOSITORY} ${WO_JAVA_APPS_ROOT_FOR_THIS_BUILD}/)
 else
 	echo "    WOBootstrap.jar NOT FOUND!"
 	echo "        This build cannot run without it. Verify that WebObjects has been installed"
