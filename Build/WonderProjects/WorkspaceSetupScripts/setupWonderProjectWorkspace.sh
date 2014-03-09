@@ -153,10 +153,10 @@ mkdir -p ${WO_LOCAL_FRAMEWORKS_FOR_THIS_BUILD}
 mkdir -p ${WO_EXTENSIONS_FOR_THIS_BUILD}
 
 # Get all the Projects that have been checked out as part of this job
-PROJECTS=`ls ${WORKSPACE}/Projects/`
+#PROJECTS=`ls ${WORKSPACE}/Projects/`
 
 # Step through them to get the list of WO frameworks on their Classpath.
-for PROJECT in $PROJECTS; do
+#for PROJECT in $PROJECTS; do
 #	if [ "${PROJECT}" == "${PROJECT_NAME}" ]; then
 		echo " "
 		echo "Parsing ${WORKSPACE}/Projects/**/.classpath and ${WORKSPACE}/**/.classpath to determine WOFramework dependencies"
@@ -304,7 +304,7 @@ for PROJECT in $PROJECTS; do
 			fi
 		done
 #	fi
-done
+#done
 
 echo "Link to ${WOPROJECT} so Ant can build the WO project."
 mkdir -p ${ROOT}/lib
