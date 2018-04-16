@@ -12,14 +12,12 @@ echo "Deployed Application Name: ${DEPLOYED_APPLICATION_NAME}"
 
 echo "              WO Revision: ${WO_VERSION}"
 if [ "$WO_VERSION" == "" ]; then
-	echo "You must provide a WO version."
-	exit 1
+	WO_VERSION="5.4.3"
 fi
 
 echo "           WOnder Version: ${WONDER_GIT_REFERENCE}"
 if [ "$WONDER_GIT_REFERENCE" == "" ]; then
-	echo "You must provide a Git Reference for Wonder."
-	exit 1
+	WONDER_GIT_REFERENCE="master"
 fi
 
 if [ "$PROJECT_BRANCHES_TAGS_TRUNK" == "trunk" ]; then
